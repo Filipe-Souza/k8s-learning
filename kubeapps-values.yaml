@@ -1,0 +1,28 @@
+ingress:
+  enabled: true
+  certManager: true
+  hostname: {{ .Release.hostname }}
+  tls: true
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: {{ .Release.hostname }}.
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: "30720m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+
+authProxy:
+  enabled: true
+  provider: google
+  clientID: {{ .Release.clientID }}
+  clientSecret: {{ .Release.clientSecret }}
+  oauthLoginURI: "/oauth2/login"
+  oauthLogoutURI: "/oauth2/logout"
+  cookieSecret: {{ .Release.cookieSecret | b64enc }}
+  additionalFlags: [
+      --cookie-secure=true,
+      --scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/cloud-platform
+  ]
+
+frontend:
+  proxypassAccessTokenAsBearer: true
+

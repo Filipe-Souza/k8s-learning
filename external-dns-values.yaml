@@ -1,0 +1,18 @@
+rbac:
+  create: true
+
+sources: [service, ingress]
+
+provider: google
+
+txtPrefix: "external-dns-"
+
+google:
+  serviceAccountSecret: external-dns-sa
+  serviceAccountSecretKey: external-dns-sa.json
+
+interval: "1m"
+
+policy: sync
+
+domainFilters: [ {{ .Release.hostname }} ]
